@@ -1,2 +1,2 @@
-# dba-reddit-project-BW
+# dba-reddit-project
 Reddit data scraping course project for Digital Business Analytics (DS-464)
