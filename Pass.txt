@@ -1,5 +1,0 @@
-Client Secret: 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
-Client ID: 751197645124-j5br24fuh7nfr4tdhojc265vigku92km.apps.googleusercontent.com
-
-Youtube Data Analytics API key: AIzaSyC8zaa9CfAXLNkblqmd7kp8nnOmb6KSvl0
-

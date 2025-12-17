@@ -1,2 +1,1 @@
-# dba-reddit-project
-Reddit data scraping course project for Digital Business Analytics (DS-464)
+Youtube data scraping course project for Digital Business Analytics (DS-464)
