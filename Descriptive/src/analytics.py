@@ -364,10 +364,17 @@ class F1DescriptiveAnalytics:
         texts = []
         
         if source in ['comments', 'both']:
-            texts.extend(self.comments['text_original'].fillna('').tolist())
+            if 'text_original' in self.comments.columns:
+                texts.extend(self.comments['text_original'].fillna('').tolist())
         
         if source in ['descriptions', 'both']:
-            texts.extend(self.videos['description'].fillna('').tolist())
+            # Some workflows (e.g., loading a minimal videos table from processed reports)
+            # may not include a `description` column.
+            if 'description' in self.videos.columns:
+                texts.extend(self.videos['description'].fillna('').tolist())
+            elif 'title' in self.videos.columns:
+                # Fallback: use titles as a proxy for descriptions so keyword extraction still works.
+                texts.extend(self.videos['title'].fillna('').tolist())
         
         return utils.extract_keywords(texts, top_n=top_n)
     

@@ -1,0 +1,153 @@
+{
+  "global_sentiment": {
+    "total_comments": 7361,
+    "positive_count": "3669",
+    "neutral_count": "2389",
+    "negative_count": "1303",
+    "positive_pct": 49.8437712267355,
+    "neutral_pct": 32.454829506860484,
+    "negative_pct": 17.70139926640402,
+    "avg_sentiment": 0.2141369243309333,
+    "std_sentiment": 0.43126345940936683
+  },
+  "polarity_performance_correlation": {
+    "sentiment_vs_view_count": 0.043386428655767764,
+    "sentiment_vs_like_count": 0.0698856446251748,
+    "sentiment_vs_comment_count": -0.078878578307519,
+    "sentiment_vs_engagement_rate": 0.065905516373152
+  },
+  "performance_summary": {
+    "total_videos": 57,
+    "total_views": "68744501",
+    "total_likes": "1830705",
+    "total_comments": "53498",
+    "avg_views": 1206043.8771929825,
+    "avg_likes": 32117.63157894737,
+    "avg_comments": 938.561403508772,
+    "avg_engagement_rate": 4.108502923141288,
+    "median_views": 382341.0,
+    "max_views": "7505519"
+  },
+  "top_keywords": [
+    [
+      "max",
+      387
+    ],
+    [
+      "lewis",
+      212
+    ],
+    [
+      "lando",
+      209
+    ],
+    [
+      "love",
+      209
+    ],
+    [
+      "ferrari",
+      208
+    ],
+    [
+      "win",
+      199
+    ],
+    [
+      "yuki",
+      174
+    ],
+    [
+      "george",
+      156
+    ],
+    [
+      "hamilton",
+      156
+    ],
+    [
+      "alonso",
+      154
+    ],
+    [
+      "charles",
+      151
+    ],
+    [
+      "sainz",
+      150
+    ],
+    [
+      "man",
+      146
+    ],
+    [
+      "carlos",
+      141
+    ],
+    [
+      "perez",
+      136
+    ],
+    [
+      "oscar",
+      134
+    ],
+    [
+      "checo",
+      132
+    ],
+    [
+      "lap",
+      130
+    ],
+    [
+      "stroll",
+      129
+    ],
+    [
+      "better",
+      126
+    ],
+    [
+      "verstappen",
+      126
+    ],
+    [
+      "red",
+      120
+    ],
+    [
+      "piastri",
+      119
+    ],
+    [
+      "never",
+      115
+    ],
+    [
+      "amazing",
+      110
+    ],
+    [
+      "mercedes",
+      110
+    ],
+    [
+      "mclaren",
+      108
+    ],
+    [
+      "track",
+      108
+    ],
+    [
+      "lol",
+      105
+    ],
+    [
+      "let",
+      103
+    ]
+  ]
+}
