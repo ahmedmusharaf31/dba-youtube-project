@@ -8,18 +8,12 @@ import json
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-<<<<<<< HEAD
-=======
 import sqlite3
-import json
 from datetime import datetime, timedelta
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 import warnings
 warnings.filterwarnings('ignore')
 
 # ============================================================================
-<<<<<<< HEAD
-=======
 # 0. SQLITE CACHE CLASS
 class F1DataCache:
     """SQLite database for caching F1 data"""
@@ -203,7 +197,6 @@ class F1DataCache:
         
         
 # ============================================================================
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 # 1. DATA PIPELINE CLASSES
 # ============================================================================
 
@@ -398,9 +391,6 @@ class OpenF1DataPipeline:
         
         return weekend_data
 
-<<<<<<< HEAD
-=======
-
 
 class CachedOpenF1DataPipeline(OpenF1DataPipeline):
     """OpenF1 pipeline with SQLite caching"""
@@ -451,16 +441,9 @@ class CachedOpenF1DataPipeline(OpenF1DataPipeline):
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {endpoint}: {e}")
             return pd.DataFrame()
-
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 # ============================================================================
 # 2. PERFORMANCE ANALYZER CLASS
 # ============================================================================
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 class DriverPerformanceAnalyzer:
     """Analyzes driver performance and calculates composite scores"""
     
@@ -867,9 +850,6 @@ class DriverPerformanceAnalyzer:
         
         return composite_scores
 
-<<<<<<< HEAD
-=======
-
 class CachedDriverPerformanceAnalyzer(DriverPerformanceAnalyzer):
     """Analyzer with score caching"""
     
@@ -898,7 +878,6 @@ class CachedDriverPerformanceAnalyzer(DriverPerformanceAnalyzer):
             self.db_cache.cache_driver_scores(year, scores)
         
         return scores
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 # ============================================================================
 # 3. VISUALIZATION CLASS
 # ============================================================================
@@ -1218,27 +1197,6 @@ class PerformanceVisualizer:
         return "\n".join(report_lines)
 
 # ============================================================================
-<<<<<<< HEAD
-# 4. FIXED MAIN FUNCTION
-# ============================================================================
-
-def main():
-    """Main execution function with enhanced visualizations"""
-    print(" F1 Driver Performance Analysis System")
-    print("=" * 50)
-    
-    # Initialize pipeline and analyzer
-    pipeline = OpenF1DataPipeline(cache_dir="./f1_data_cache")
-    analyzer = DriverPerformanceAnalyzer(pipeline)
-    visualizer = PerformanceVisualizer()
-    
-    # Analyze 2024 season
-    print("\n1. Analyzing 2024 season...")
-    scores_2024 = analyzer.calculate_composite_score(2024)
-    
-    if scores_2024:
-        # ADD DRIVER NAMES HERE
-=======
 # 5. PREDICTIVE ANALYTICS MODULE
 # ============================================================================
 
@@ -1654,7 +1612,6 @@ class ChampionPredictor:
             return None
 
         # Add driver info
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
         driver_name_mapping = {
             1: "Max Verstappen", 44: "Lewis Hamilton", 16: "Charles Leclerc",
             4: "Lando Norris", 55: "Carlos Sainz", 11: "Sergio Perez",
@@ -1664,109 +1621,6 @@ class ChampionPredictor:
             2: "Logan Sargeant", 24: "Zhou Guanyu", 77: "Valtteri Bottas",
             31: "Esteban Ocon", 10: "Pierre Gasly", 50: "Oliver Bearman"
         }
-<<<<<<< HEAD
-        
-        # Add names and teams to scores
-        for driver_num, score_data in scores_2024.items():
-            if driver_num in driver_name_mapping:
-                score_data['driver_name'] = driver_name_mapping[driver_num]
-            else:
-                score_data['driver_name'] = f"Driver {driver_num}"
-            
-            # Add team info
-            team_mapping = {
-                1: "Red Bull", 11: "Red Bull",
-                44: "Mercedes", 63: "Mercedes",
-                16: "Ferrari", 55: "Ferrari",
-                4: "McLaren", 81: "McLaren",
-                14: "Aston Martin", 18: "Aston Martin",
-                22: "RB", 3: "RB",
-                27: "Haas", 20: "Haas",
-                23: "Williams", 2: "Williams",
-                24: "Sauber", 77: "Sauber",
-                31: "Alpine", 10: "Alpine",
-                50: "Haas"
-            }
-            score_data['team'] = team_mapping.get(driver_num, "Unknown")
-        
-        # Display simple rankings with names
-        print("\n" + "="*50)
-        print("2024 DRIVER RANKINGS:")
-        print("="*50)
-        
-        sorted_drivers = sorted(scores_2024.items(), 
-                              key=lambda x: x[1]['composite_score'], 
-                              reverse=True)
-        
-        for rank, (driver_num, scores_dict) in enumerate(sorted_drivers[:15], 1):
-            name = scores_dict['driver_name']
-            team = scores_dict.get('team', 'Unknown')
-            score = scores_dict['composite_score']
-            print(f"{rank:2}. {name:20} ({team:15}) - Score: {score:.1f}")
-        
-        # Display full report
-        report = visualizer.create_performance_report(scores_2024, 2024)
-        print("\n" + report)
-        
-        # Create visualizations WITH NAMES
-        print("\n Generating visualizations...")
-        visualizer.plot_composite_scores(scores_2024, 2024)
-        
-        # Show radar chart for top 3 drivers
-        sorted_drivers = sorted(scores_2024.items(), 
-                              key=lambda x: x[1]['composite_score'], 
-                              reverse=True)
-        
-        for i, (driver_num, driver_scores) in enumerate(sorted_drivers[:3], 1):
-            driver_name = driver_scores['driver_name']
-            print(f"\n Generating radar chart for #{i}: {driver_name}")
-            visualizer.plot_radar_chart(driver_scores, f"Rank #{i}: {driver_name}")
-        
-        # Save results to CSV
-        results_df = pd.DataFrame.from_dict(scores_2024, orient='index')
-        results_df.to_csv(f"driver_performance_2024.csv")
-        print(f"\n Results saved to 'driver_performance_2024.csv'")
-        
-        # Save rankings separately
-        ranking_data = []
-        for rank, (driver_num, scores_dict) in enumerate(sorted_drivers, 1):
-            ranking_data.append({
-                'rank': rank,
-                'driver_number': driver_num,
-                'driver_name': scores_dict['driver_name'],
-                'team': scores_dict.get('team', 'Unknown'),
-                'composite_score': scores_dict['composite_score'],
-                'quali_score': scores_dict.get('quali_score', 0),
-                'pace_score': scores_dict.get('pace_score', 0),
-                'consistency_score': scores_dict.get('consistency_score', 0),
-                'racecraft_score': scores_dict.get('racecraft_score', 0),
-                'reliability_score': scores_dict.get('reliability_score', 0)
-            })
-        
-        ranking_df = pd.DataFrame(ranking_data)
-        ranking_df.to_csv(f"driver_rankings_2024.csv", index=False)
-        print(f"    Rankings saved to 'driver_rankings_2024.csv'")
-        
-    else:
-        print("Could not calculate scores for 2024")
-    
-    # For prediction phase
-    print("\n" + "="*50)
-    print("Next Phase: 2025 Champion Prediction")
-    print("="*50)
-    print("\nTo implement prediction for 2025, we need to:")
-    print("1. Collect historical data (2020-2024)")
-    print("2. Engineer predictive features")
-    print("3. Train ML models (XGBoost, Random Forest)")
-    print("4. Validate using backtesting")
-    
-    return scores_2024
-
-# ============================================================================
-# 5. RUN THE SCRIPT
-# ============================================================================
-
-=======
 
         team_mapping = {
             1: "Red Bull", 11: "Red Bull",
@@ -1831,6 +1685,7 @@ class ChampionPredictor:
             return {pred['driver_num']: pred['probability'] for pred in predictions}
 
         return None
+
 
     def predict_constructor_championship(self):
         """Predict constructor championship winners"""
@@ -2262,6 +2117,5 @@ def main():
     
     return scores_2024
 
->>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 if __name__ == "__main__":
-    scores = main()
+    main()

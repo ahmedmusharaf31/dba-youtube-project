@@ -160,7 +160,6 @@ No committed binary or database files are required.
 
 * **Saaim**
 * **Ahmed Musharaf**
-* Project collaborators
 
 ---
 
