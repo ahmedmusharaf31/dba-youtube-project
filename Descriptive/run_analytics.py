@@ -84,14 +84,14 @@ def print_sentiment_summary(sentiment: dict):
     print(f"  Total Comments Analyzed: {sentiment['total_comments']:,}")
     print(f"  Average Sentiment Score: {sentiment['avg_sentiment']:.3f}")
     print()
-    print(f"  😊 Positive: {sentiment['positive_count']:,} ({sentiment['positive_pct']:.1f}%)")
-    print(f"  😐 Neutral:  {sentiment['neutral_count']:,} ({sentiment['neutral_pct']:.1f}%)")
-    print(f"  😞 Negative: {sentiment['negative_count']:,} ({sentiment['negative_pct']:.1f}%)")
+    print(f"  Positive: {sentiment['positive_count']:,} ({sentiment['positive_pct']:.1f}%)")
+    print(f"  Neutral:  {sentiment['neutral_count']:,} ({sentiment['neutral_pct']:.1f}%)")
+    print(f"  Negative: {sentiment['negative_count']:,} ({sentiment['negative_pct']:.1f}%)")
 
 
 def print_driver_sov(sov_df):
     """Print driver share of voice summary."""
-    print("\n🏎️  DRIVER SHARE OF VOICE (Top 10)")
+    print("\nDRIVER SHARE OF VOICE (Top 10)")
     print("-" * 50)
     print(f"{'Driver':<15} {'Mentions':>10} {'SoV %':>10}")
     print("-" * 50)
@@ -101,18 +101,18 @@ def print_driver_sov(sov_df):
 
 def print_driver_sentiment(sentiment_df):
     """Print driver sentiment summary."""
-    print("\n💭 DRIVER SENTIMENT SCORES (sorted by avg sentiment)")
+    print("\nDRIVER SENTIMENT SCORES (sorted by avg sentiment)")
     print("-" * 70)
     print(f"{'Driver':<15} {'Avg Sent':>10} {'Positive%':>10} {'Negative%':>10} {'Comments':>10}")
     print("-" * 70)
     for _, row in sentiment_df.head(10).iterrows():
-        emoji = "😊" if row['avg_sentiment'] > 0.1 else ("😞" if row['avg_sentiment'] < -0.1 else "😐")
+        emoji = "Positive" if row['avg_sentiment'] > 0.1 else ("Negative" if row['avg_sentiment'] < -0.1 else "Neutral")
         print(f"{emoji} {row['driver']:<13} {row['avg_sentiment']:>10.3f} {row['positive_pct']:>9.1f}% {row['negative_pct']:>9.1f}% {row['comment_count']:>10,}")
 
 
 def print_rivalry_intensity(rivalry_df):
     """Print rivalry intensity summary."""
-    print("\n⚔️  RIVALRY INTENSITY")
+    print("\nRIVALRY INTENSITY")
     print("-" * 50)
     if rivalry_df.empty:
         print("  No rivalry mentions detected in comments.")
@@ -123,7 +123,7 @@ def print_rivalry_intensity(rivalry_df):
 
 def print_video_performance(summary: dict):
     """Print video performance summary."""
-    print("\n📹 VIDEO PERFORMANCE SUMMARY")
+    print("\nVIDEO PERFORMANCE SUMMARY")
     print("-" * 40)
     print(f"  Total Videos: {summary['total_videos']:,}")
     print(f"  Total Views: {summary['total_views']:,}")
@@ -137,7 +137,7 @@ def print_video_performance(summary: dict):
 
 def print_team_mentions(team_df):
     """Print team mention frequency."""
-    print("\n🏆 TEAM MENTION FREQUENCY")
+    print("\nTEAM MENTION FREQUENCY")
     print("-" * 50)
     for _, row in team_df.iterrows():
         bar_length = int(row['mention_pct'] * 2)
@@ -147,7 +147,7 @@ def print_team_mentions(team_df):
 
 def print_top_keywords(keywords):
     """Print top keywords."""
-    print("\n🔤 TOP KEYWORDS")
+    print("\nTOP KEYWORDS")
     print("-" * 40)
     print("  " + ", ".join([f"{word} ({count})" for word, count in keywords[:15]]))
 
@@ -192,7 +192,7 @@ def main():
             print("Example: python run_analytics.py --extract --max-videos 100")
             sys.exit(1)
     
-    print(f"\n✓ Loaded {len(videos_df)} videos and {len(comments_df)} comments")
+    print(f"\nLoaded {len(videos_df)} videos and {len(comments_df)} comments")
     
     # Step 2: Run analytics
     print("\n" + "=" * 60)
@@ -224,7 +224,7 @@ def main():
     analytics.save_report_to_csv()
     
     print("\n" + "=" * 60)
-    print("✓ Pipeline Complete!")
+    print("Pipeline Complete!")
     print(f"  Results saved to: {config.PROCESSED_DATA_DIR}")
     print("=" * 60)
 
