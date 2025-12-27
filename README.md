@@ -132,9 +132,9 @@ f1_data_cache/
 
 To recreate data or results:
 
-1. Run preprocessing scripts
-2. Execute feature engineering notebooks
-3. Train predictive models from source
+1. Run the main_script.py
+2. Run the F1_dashbaord via this command: python -m streamlit run f1_dashboard.py
+3. Enjoy!
 
 No committed binary or database files are required.
 
