@@ -1,0 +1,39 @@
+======================================================================
+F1 2025 WORLD CHAMPION PREDICTION REPORT
+======================================================================
+
+PREDICTION METHODOLOGY
+----------------------------------------
+Models trained on historical data (2020-2024) to predict next season champion.
+Features used: Composite score and all component scores from current season.
+Models: Random Forest, Gradient Boosting, Logistic Regression
+
+MODEL PREDICTIONS
+----------------------------------------
+Random Forest:
+  Champion: Oscar Piastri (McLaren)
+  Probability: 18.0%
+  2024 Composite Score: 46.2
+
+Gradient Boosting:
+  Champion: Lando Norris (McLaren)
+  Probability: 0.0%
+  2024 Composite Score: 65.8
+
+Logistic Regression:
+  Champion: Sergio Perez (Red Bull)
+  Probability: 72.6%
+  2024 Composite Score: 31.3
+
+CONSENSUS PREDICTION
+----------------------------------------
+Most likely 2025 Champion: Oscar Piastri
+Model votes: 1/3
+
+KEY FACTORS FOR CHAMPIONSHIP SUCCESS
+----------------------------------------
+1. Race Pace (30%): Most important factor in predictions
+2. Consistency (20%): Regular top finishes are crucial
+3. Qualifying Performance (25%): Grid position matters
+4. Reliability (10%): Must finish races consistently
+5. Racecraft (15%): Overtaking and race management

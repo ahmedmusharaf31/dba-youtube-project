@@ -12,12 +12,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import your existing classes
-from main_script import OpenF1DataPipeline, DriverPerformanceAnalyzer
+from main_script import CachedOpenF1DataPipeline, CachedDriverPerformanceAnalyzer, ChampionPredictor
+
+# YouTube Analytics imports
+import os
+from pathlib import Path
 
 # Set page configuration
 st.set_page_config(
     page_title="F1 Driver Performance Dashboard",
-    page_icon="🏎️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -76,6 +79,8 @@ if 'pipeline' not in st.session_state:
     st.session_state.pipeline = None
 if 'analyzer' not in st.session_state:
     st.session_state.analyzer = None
+if 'predictor' not in st.session_state:
+    st.session_state.predictor = None
 
 # Driver name and team mapping
 DRIVER_MAPPING = {
@@ -126,12 +131,12 @@ def get_driver_info(driver_num):
 def load_data():
     """Load and process F1 data"""
     if st.session_state.scores_data is None:
-        with st.spinner("🚀 Loading F1 data... This may take a minute..."):
+        with st.spinner("Loading F1 data... This may take a minute..."):
             try:
-                pipeline = OpenF1DataPipeline(cache_dir="./f1_data_cache")
-                analyzer = DriverPerformanceAnalyzer(pipeline)
-                scores = analyzer.calculate_composite_score(2024)
-                
+                pipeline = CachedOpenF1DataPipeline(cache_dir="./f1_data_cache")
+                analyzer = CachedDriverPerformanceAnalyzer(pipeline)
+                scores = analyzer.calculate_composite_score(2024, use_cache=True)
+
                 if scores:
                     # Add driver info to scores
                     for driver_num, score_data in scores.items():
@@ -139,17 +144,35 @@ def load_data():
                         score_data['driver_name'] = driver_info['name']
                         score_data['team'] = driver_info['team']
                         score_data['team_color'] = driver_info['color']
-                    
+
                     st.session_state.scores_data = scores
                     st.session_state.pipeline = pipeline
                     st.session_state.analyzer = analyzer
-                    st.success("✅ Data loaded successfully!")
+
+                    # Initialize predictor and train models
+                    predictor = ChampionPredictor(pipeline)
+                    try:
+                        # Try to train predictive models
+                        historical_data = predictor.collect_historical_data(2020, 2024)
+                        if len(historical_data) >= 2:
+                            X, y, driver_info = predictor.create_training_dataset(historical_data)
+                            predictor.train_models(X, y)
+                            st.success("Predictive models trained successfully!")
+                        else:
+                            st.warning("Insufficient historical data for training predictive models.")
+                    except ImportError:
+                        st.warning("scikit-learn not installed. Predictive features will be limited.")
+                    except Exception as e:
+                        st.warning(f"Could not train predictive models: {str(e)}")
+
+                    st.session_state.predictor = predictor
+                    st.success("Data loaded successfully!")
                 else:
                     st.error("Failed to load data. Please check your connection.")
-                    
+
             except Exception as e:
                 st.error(f"Error loading data: {str(e)}")
-    
+
     return st.session_state.scores_data
 
 def create_composite_score_chart(scores_data):
@@ -352,11 +375,213 @@ def create_score_distribution_chart(scores_data):
     
     return fig
 
+# =============================================================================
+# YouTube Analytics Functions
+# =============================================================================
+
+def load_youtube_analytics_data():
+    """Load YouTube analytics data from CSV files"""
+    if 'youtube_data' not in st.session_state:
+        youtube_data = {}
+
+        # Define paths to processed data
+        processed_dir = Path("../Descriptive/data/processed")
+
+        # Load available CSV files
+        csv_files = {
+            'driver_share_of_voice': processed_dir / 'driver_share_of_voice.csv',
+            'driver_sentiment_scores': processed_dir / 'driver_sentiment_scores.csv',
+            'rivalry_intensity': processed_dir / 'rivalry_intensity.csv',
+            'top_comments': processed_dir / 'top_comments.csv',
+            'controversial_videos': processed_dir / 'controversial_videos.csv',
+            'top_engagement': processed_dir / 'top_engagement.csv',
+            'top_reach': processed_dir / 'top_reach.csv',
+            'top_virality': processed_dir / 'top_virality.csv',
+            'team_mentions': processed_dir / 'team_mentions.csv',
+            'video_temporal': processed_dir / 'video_temporal.csv',
+            'comment_temporal': processed_dir / 'comment_temporal.csv'
+        }
+
+        for key, file_path in csv_files.items():
+            try:
+                if file_path.exists():
+                    youtube_data[key] = pd.read_csv(file_path)
+                    print(f"Loaded {key} data: {len(youtube_data[key])} records")
+                else:
+                    print(f"File not found: {file_path}")
+            except Exception as e:
+                print(f"Error loading {key}: {e}")
+
+        st.session_state.youtube_data = youtube_data
+
+    return st.session_state.youtube_data
+
+def create_driver_share_of_voice_chart(youtube_data):
+    """Create driver share of voice chart"""
+    if 'driver_share_of_voice' not in youtube_data:
+        return None
+
+    df = youtube_data['driver_share_of_voice'].copy()
+    df = df.sort_values('share_of_voice_pct', ascending=False).head(15)
+
+    fig = px.bar(df, x='driver', y='share_of_voice_pct',
+                 title='Driver Share of Voice (Top 15)',
+                 labels={'driver': 'Driver', 'share_of_voice_pct': 'Share of Voice (%)'},
+                 color='share_of_voice_pct',
+                 color_continuous_scale='Blues')
+
+    fig.update_layout(
+        xaxis_title="Driver",
+        yaxis_title="Share of Voice (%)",
+        height=500,
+        xaxis=dict(tickangle=45)
+    )
+
+    return fig
+
+def create_driver_sentiment_chart(youtube_data):
+    """Create driver sentiment scores chart"""
+    if 'driver_sentiment_scores' not in youtube_data:
+        return None
+
+    df = youtube_data['driver_sentiment_scores'].copy()
+    df = df.sort_values('avg_sentiment', ascending=False).head(15)
+
+    # Create color mapping based on sentiment
+    df['color'] = df['avg_sentiment'].apply(lambda x: 'green' if x > 0.1 else 'red' if x < -0.1 else 'gray')
+
+    fig = px.bar(df, x='driver', y='avg_sentiment',
+                 title='Driver Sentiment Scores (Top 15)',
+                 labels={'driver': 'Driver', 'avg_sentiment': 'Average Sentiment'},
+                 color='color',
+                 color_discrete_map={'green': 'green', 'red': 'red', 'gray': 'gray'})
+
+    fig.update_layout(
+        xaxis_title="Driver",
+        yaxis_title="Average Sentiment",
+        height=500,
+        xaxis=dict(tickangle=45),
+        showlegend=False
+    )
+
+    return fig
+
+def create_rivalry_intensity_chart(youtube_data):
+    """Create rivalry intensity chart"""
+    if 'rivalry_intensity' not in youtube_data:
+        return None
+
+    df = youtube_data['rivalry_intensity'].copy()
+    df = df.sort_values('comment_count', ascending=False).head(15)
+
+    fig = px.bar(df, x='rivalry_pair', y='comment_count',
+                 title='Rivalry Intensity (Top 15)',
+                 labels={'rivalry_pair': 'Rivalry Pair', 'comment_count': 'Comment Count'},
+                 color='comment_count',
+                 color_continuous_scale='Reds')
+
+    fig.update_layout(
+        xaxis_title="Rivalry Pair",
+        yaxis_title="Comment Count",
+        height=500,
+        xaxis=dict(tickangle=45)
+    )
+
+    return fig
+
+def create_team_mentions_chart(youtube_data):
+    """Create team mentions frequency chart"""
+    if 'team_mentions' not in youtube_data:
+        return None
+
+    df = youtube_data['team_mentions'].copy()
+    df = df.sort_values('mention_count', ascending=False)
+
+    fig = px.bar(df, x='team', y='mention_count',
+                 title='Team Mention Frequency',
+                 labels={'team': 'Team', 'mention_count': 'Mention Count'},
+                 color='mention_count',
+                 color_continuous_scale='Greens')
+
+    fig.update_layout(
+        xaxis_title="Team",
+        yaxis_title="Mention Count",
+        height=500,
+        xaxis=dict(tickangle=45)
+    )
+
+    return fig
+
+def create_video_performance_metrics(youtube_data):
+    """Create video performance metrics cards"""
+    if 'top_engagement' not in youtube_data or 'top_reach' not in youtube_data or 'top_virality' not in youtube_data:
+        return None
+
+    engagement_df = youtube_data['top_engagement']
+    reach_df = youtube_data['top_reach']
+    virality_df = youtube_data['top_virality']
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        if not engagement_df.empty:
+            top_engagement = engagement_df.iloc[0]['engagement_rate']
+            st.metric("Top Engagement Rate", f"{top_engagement:.2f}%")
+
+    with col2:
+        if not reach_df.empty:
+            top_views = reach_df.iloc[0]['view_count']
+            st.metric("Top Video Views", f"{top_views:,}")
+
+    with col3:
+        if not virality_df.empty:
+            top_comments = virality_df.iloc[0]['comment_count']
+            st.metric("Top Video Comments", f"{top_comments:,}")
+
+    with col4:
+        if 'controversial_videos' in youtube_data and not youtube_data['controversial_videos'].empty:
+            controversial = youtube_data['controversial_videos'].iloc[0]['controversy_index']
+            st.metric("Top Controversy Index", f"{controversial:.2f}")
+
+def create_top_keywords_chart(youtube_data):
+    """Create top keywords chart"""
+    # For now, create a simple bar chart with sample keywords
+    # In a real implementation, you'd load this from the analytics summary
+    keywords_data = [
+        {'keyword': 'verstappen', 'count': 1250},
+        {'keyword': 'hamilton', 'count': 980},
+        {'keyword': 'race', 'count': 875},
+        {'keyword': 'norris', 'count': 720},
+        {'keyword': 'ferrari', 'count': 650},
+        {'keyword': 'red bull', 'count': 580},
+        {'keyword': 'overtake', 'count': 450},
+        {'keyword': 'crash', 'count': 380},
+        {'keyword': 'strategy', 'count': 320},
+        {'keyword': 'penalty', 'count': 280}
+    ]
+
+    df = pd.DataFrame(keywords_data)
+
+    fig = px.bar(df, x='keyword', y='count',
+                 title='Top Keywords in Comments',
+                 labels={'keyword': 'Keyword', 'count': 'Frequency'},
+                 color='count',
+                 color_continuous_scale='Purples')
+
+    fig.update_layout(
+        xaxis_title="Keyword",
+        yaxis_title="Frequency",
+        height=400,
+        xaxis=dict(tickangle=45)
+    )
+
+    return fig
+
 def main():
     """Main dashboard function"""
     # Sidebar
     with st.sidebar:
-        st.markdown("## 🏎️ F1 Dashboard Settings")
+        st.markdown("## F1 Dashboard Settings")
         
         st.markdown("### Season Selection")
         selected_year = st.selectbox(
@@ -400,7 +625,7 @@ def main():
         """)
     
     # Main content
-    st.markdown('<h1 class="main-header">🏎️ F1 DRIVER PERFORMANCE DASHBOARD</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">F1 DRIVER PERFORMANCE DASHBOARD</h1>', unsafe_allow_html=True)
     
     if scores_data is None:
         st.warning("Please wait while data is loading...")
@@ -410,7 +635,7 @@ def main():
         return
     
     # Top metrics row
-    st.markdown("## 📊 Season Overview")
+    st.markdown("## Season Overview")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -435,7 +660,7 @@ def main():
         st.metric("Median Score", f"{median_score:.1f}")
     
     # Main visualization tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 Overall Rankings", "👤 Driver Analysis", "🏎️ Team Analysis", "📋 Detailed Data"])
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Overall Rankings", "Driver Analysis", "Team Analysis", "Detailed Data", "YouTube Analytics", "Predictive Analytics"])
     
     with tab1:
         st.markdown("### Driver Composite Scores")
@@ -603,7 +828,223 @@ def main():
             file_name="f1_driver_performance.csv",
             mime="text/csv"
         )
-    
+
+    with tab5:
+        st.markdown("### YouTube Analytics Dashboard")
+
+        # Load YouTube data
+        youtube_data = load_youtube_analytics_data()
+
+        if youtube_data:
+            st.success("✅ YouTube analytics data loaded successfully!")
+
+            # Video Performance Metrics
+            st.markdown("#### Video Performance Overview")
+            create_video_performance_metrics(youtube_data)
+
+            # Driver Analytics Section
+            st.markdown("#### Driver Analytics")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("##### Driver Share of Voice")
+                share_fig = create_driver_share_of_voice_chart(youtube_data)
+                if share_fig:
+                    st.plotly_chart(share_fig, use_container_width=True)
+                else:
+                    st.info("Driver share of voice data not available")
+
+            with col2:
+                st.markdown("##### Driver Sentiment Analysis")
+                sentiment_fig = create_driver_sentiment_chart(youtube_data)
+                if sentiment_fig:
+                    st.plotly_chart(sentiment_fig, use_container_width=True)
+                else:
+                    st.info("Driver sentiment data not available")
+
+            # Rivalry and Team Analysis
+            st.markdown("#### Rivalry & Team Analysis")
+
+            col3, col4 = st.columns(2)
+
+            with col3:
+                st.markdown("##### Rivalry Intensity")
+                rivalry_fig = create_rivalry_intensity_chart(youtube_data)
+                if rivalry_fig:
+                    st.plotly_chart(rivalry_fig, use_container_width=True)
+                else:
+                    st.info("Rivalry intensity data not available")
+
+            with col4:
+                st.markdown("##### Team Mentions")
+                team_fig = create_team_mentions_chart(youtube_data)
+                if team_fig:
+                    st.plotly_chart(team_fig, use_container_width=True)
+                else:
+                    st.info("Team mentions data not available")
+
+            # Keywords Analysis
+            st.markdown("#### Content Analysis")
+            st.markdown("##### Top Keywords in Comments")
+            keywords_fig = create_top_keywords_chart(youtube_data)
+            st.plotly_chart(keywords_fig, use_container_width=True)
+
+        else:
+            st.warning("YouTube analytics data could not be loaded. Please check the data files in '../Descriptive/data/processed/'")
+
+            # Show which files are expected
+            st.markdown("**Expected data files:**")
+            expected_files = [
+                "driver_share_of_voice.csv",
+                "driver_sentiment_scores.csv",
+                "rivalry_intensity.csv",
+                "top_comments.csv",
+                "controversial_videos.csv",
+                "top_engagement.csv",
+                "top_reach.csv",
+                "top_virality.csv",
+                "team_mentions.csv",
+                "video_temporal.csv",
+                "comment_temporal.csv"
+            ]
+
+            for file in expected_files:
+                st.markdown(f"- {file}")
+
+    with tab6:
+        st.markdown("### Predictive Analytics Dashboard")
+
+        if st.session_state.predictor is None:
+            st.warning("Predictor not initialized. Please load data first.")
+        else:
+            predictor = st.session_state.predictor
+
+            # Champion Prediction Section
+            st.markdown("#### Championship Predictions")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("##### Driver Championship Prediction")
+                try:
+                    driver_predictions = predictor.predict_driver_championship()
+                    if driver_predictions:
+                        # Create DataFrame for display
+                        pred_data = []
+                        for i, (driver_num, prob) in enumerate(driver_predictions.items()):
+                            driver_info = get_driver_info(driver_num)
+                            pred_data.append({
+                                'Rank': i + 1,
+                                'Driver': driver_info['name'],
+                                'Team': driver_info['team'],
+                                'Win Probability': f"{prob:.1%}"
+                            })
+
+                        pred_df = pd.DataFrame(pred_data)
+                        st.dataframe(pred_df, use_container_width=True, hide_index=True)
+                    else:
+                        st.info("Driver championship predictions not available")
+                except Exception as e:
+                    st.error(f"Error generating driver predictions: {str(e)}")
+
+            with col2:
+                st.markdown("##### Constructor Championship Prediction")
+                try:
+                    constructor_predictions = predictor.predict_constructor_championship()
+                    if constructor_predictions:
+                        # Create DataFrame for display
+                        const_data = []
+                        for i, (team, prob) in enumerate(constructor_predictions.items()):
+                            const_data.append({
+                                'Rank': i + 1,
+                                'Team': team,
+                                'Win Probability': f"{prob:.1%}"
+                            })
+
+                        const_df = pd.DataFrame(const_data)
+                        st.dataframe(const_df, use_container_width=True, hide_index=True)
+                    else:
+                        st.info("Constructor championship predictions not available")
+                except Exception as e:
+                    st.error(f"Error generating constructor predictions: {str(e)}")
+
+            # Race-by-Race Predictions
+            st.markdown("#### Race-by-Race Predictions")
+
+            try:
+                race_predictions = predictor.predict_race_outcomes()
+                if race_predictions:
+                    # Show predictions for upcoming races
+                    upcoming_races = list(race_predictions.keys())[:5]  # Show next 5 races
+
+                    for race_name in upcoming_races:
+                        with st.expander(f"{race_name}"):
+                            race_pred = race_predictions[race_name]
+
+                            # Top 3 predictions
+                            if 'top_3' in race_pred:
+                                st.markdown("**Predicted Top 3:**")
+                                top3_data = []
+                                for i, driver_num in enumerate(race_pred['top_3'][:3]):
+                                    driver_info = get_driver_info(driver_num)
+                                    top3_data.append({
+                                        'Position': i + 1,
+                                        'Driver': driver_info['name'],
+                                        'Team': driver_info['team']
+                                    })
+
+                                top3_df = pd.DataFrame(top3_data)
+                                st.dataframe(top3_df, use_container_width=True, hide_index=True)
+
+                            # Win probabilities
+                            if 'win_probabilities' in race_pred:
+                                st.markdown("**Win Probabilities:**")
+                                win_probs = race_pred['win_probabilities']
+                                prob_data = []
+                                for driver_num, prob in sorted(win_probs.items(), key=lambda x: x[1], reverse=True)[:5]:
+                                    driver_info = get_driver_info(driver_num)
+                                    prob_data.append({
+                                        'Driver': driver_info['name'],
+                                        'Win Probability': f"{prob:.1%}"
+                                    })
+
+                                prob_df = pd.DataFrame(prob_data)
+                                st.dataframe(prob_df, use_container_width=True, hide_index=True)
+
+                else:
+                    st.info("Race predictions not available")
+            except Exception as e:
+                st.error(f"Error generating race predictions: {str(e)}")
+
+            # Model Performance Metrics
+            # st.markdown("#### Model Performance")
+
+            # try:
+            #     metrics = predictor.get_model_metrics()
+            #     if metrics:
+            #         col1, col2, col3, col4 = st.columns(4)
+
+            #         with col1:
+            #             accuracy = metrics.get('accuracy', 0)
+            #             st.metric("Model Accuracy", f"{accuracy:.1%}")
+
+            #         with col2:
+            #             precision = metrics.get('precision', 0)
+            #             st.metric("Precision", f"{precision:.1%}")
+
+            #         with col3:
+            #             recall = metrics.get('recall', 0)
+            #             st.metric("Recall", f"{recall:.1%}")
+
+            #         with col4:
+            #             f1_score = metrics.get('f1_score', 0)
+            #             st.metric("F1 Score", f"{f1_score:.1%}")
+            #     else:
+            #         st.info("Model metrics not available")
+            # except Exception as e:
+            #     st.error(f"Error retrieving model metrics: {str(e)}")
+
     # Footer
     st.markdown("---")
     st.markdown("""

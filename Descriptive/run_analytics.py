@@ -84,14 +84,24 @@ def print_sentiment_summary(sentiment: dict):
     print(f"  Total Comments Analyzed: {sentiment['total_comments']:,}")
     print(f"  Average Sentiment Score: {sentiment['avg_sentiment']:.3f}")
     print()
+<<<<<<< HEAD
     print(f"  😊 Positive: {sentiment['positive_count']:,} ({sentiment['positive_pct']:.1f}%)")
     print(f"  😐 Neutral:  {sentiment['neutral_count']:,} ({sentiment['neutral_pct']:.1f}%)")
     print(f"  😞 Negative: {sentiment['negative_count']:,} ({sentiment['negative_pct']:.1f}%)")
+=======
+    print(f"  Positive: {sentiment['positive_count']:,} ({sentiment['positive_pct']:.1f}%)")
+    print(f"  Neutral:  {sentiment['neutral_count']:,} ({sentiment['neutral_pct']:.1f}%)")
+    print(f"  Negative: {sentiment['negative_count']:,} ({sentiment['negative_pct']:.1f}%)")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
 
 
 def print_driver_sov(sov_df):
     """Print driver share of voice summary."""
+<<<<<<< HEAD
     print("\n🏎️  DRIVER SHARE OF VOICE (Top 10)")
+=======
+    print("\nDRIVER SHARE OF VOICE (Top 10)")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 50)
     print(f"{'Driver':<15} {'Mentions':>10} {'SoV %':>10}")
     print("-" * 50)
@@ -101,18 +111,30 @@ def print_driver_sov(sov_df):
 
 def print_driver_sentiment(sentiment_df):
     """Print driver sentiment summary."""
+<<<<<<< HEAD
     print("\n💭 DRIVER SENTIMENT SCORES (sorted by avg sentiment)")
+=======
+    print("\nDRIVER SENTIMENT SCORES (sorted by avg sentiment)")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 70)
     print(f"{'Driver':<15} {'Avg Sent':>10} {'Positive%':>10} {'Negative%':>10} {'Comments':>10}")
     print("-" * 70)
     for _, row in sentiment_df.head(10).iterrows():
+<<<<<<< HEAD
         emoji = "😊" if row['avg_sentiment'] > 0.1 else ("😞" if row['avg_sentiment'] < -0.1 else "😐")
+=======
+        emoji = "Positive" if row['avg_sentiment'] > 0.1 else ("Negative" if row['avg_sentiment'] < -0.1 else "Neutral")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
         print(f"{emoji} {row['driver']:<13} {row['avg_sentiment']:>10.3f} {row['positive_pct']:>9.1f}% {row['negative_pct']:>9.1f}% {row['comment_count']:>10,}")
 
 
 def print_rivalry_intensity(rivalry_df):
     """Print rivalry intensity summary."""
+<<<<<<< HEAD
     print("\n⚔️  RIVALRY INTENSITY")
+=======
+    print("\nRIVALRY INTENSITY")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 50)
     if rivalry_df.empty:
         print("  No rivalry mentions detected in comments.")
@@ -123,7 +145,11 @@ def print_rivalry_intensity(rivalry_df):
 
 def print_video_performance(summary: dict):
     """Print video performance summary."""
+<<<<<<< HEAD
     print("\n📹 VIDEO PERFORMANCE SUMMARY")
+=======
+    print("\nVIDEO PERFORMANCE SUMMARY")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 40)
     print(f"  Total Videos: {summary['total_videos']:,}")
     print(f"  Total Views: {summary['total_views']:,}")
@@ -137,7 +163,11 @@ def print_video_performance(summary: dict):
 
 def print_team_mentions(team_df):
     """Print team mention frequency."""
+<<<<<<< HEAD
     print("\n🏆 TEAM MENTION FREQUENCY")
+=======
+    print("\nTEAM MENTION FREQUENCY")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 50)
     for _, row in team_df.iterrows():
         bar_length = int(row['mention_pct'] * 2)
@@ -147,7 +177,11 @@ def print_team_mentions(team_df):
 
 def print_top_keywords(keywords):
     """Print top keywords."""
+<<<<<<< HEAD
     print("\n🔤 TOP KEYWORDS")
+=======
+    print("\nTOP KEYWORDS")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print("-" * 40)
     print("  " + ", ".join([f"{word} ({count})" for word, count in keywords[:15]]))
 
@@ -192,7 +226,11 @@ def main():
             print("Example: python run_analytics.py --extract --max-videos 100")
             sys.exit(1)
     
+<<<<<<< HEAD
     print(f"\n✓ Loaded {len(videos_df)} videos and {len(comments_df)} comments")
+=======
+    print(f"\nLoaded {len(videos_df)} videos and {len(comments_df)} comments")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     
     # Step 2: Run analytics
     print("\n" + "=" * 60)
@@ -224,7 +262,11 @@ def main():
     analytics.save_report_to_csv()
     
     print("\n" + "=" * 60)
+<<<<<<< HEAD
     print("✓ Pipeline Complete!")
+=======
+    print("Pipeline Complete!")
+>>>>>>> 10231d243c4568e5b36e60521c9c081ca25932eb
     print(f"  Results saved to: {config.PROCESSED_DATA_DIR}")
     print("=" * 60)
 

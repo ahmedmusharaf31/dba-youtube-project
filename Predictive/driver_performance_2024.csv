@@ -1,0 +1,36 @@
+,driver_number,driver_name,team,composite_score,quali_score,pace_score,consistency_score,racecraft_score,reliability_score
+4,4,Lando Norris,McLaren,65.8,87.0,90.1,0.0,46.9,100.0
+1,1,Max Verstappen,Red Bull,63.4,89.6,79.6,0.0,47.1,100.0
+50,50,Oliver Bearman,Haas,60.3,42.1,100.0,0.0,65.0,100.0
+63,63,George Russell,Mercedes,56.3,75.8,67.4,0.0,47.7,100.0
+55,55,Carlos Sainz,Ferrari,56.1,76.6,65.4,0.0,48.9,100.0
+16,16,Charles Leclerc,Ferrari,54.7,81.1,56.0,0.0,51.0,100.0
+44,44,Lewis Hamilton,Mercedes,53.3,61.8,65.0,0.0,55.8,100.0
+14,14,Fernando Alonso,Aston Martin,52.9,52.1,75.4,0.0,48.3,100.0
+43,43,Driver 43,Unknown,51.6,23.7,88.4,0.0,61.1,100.0
+27,27,Nico Hulkenberg,Haas,50.9,42.8,74.6,0.0,52.1,100.0
+10,10,Pierre Gasly,Alpine,50.8,37.5,79.6,0.0,50.4,100.0
+81,81,Oscar Piastri,McLaren,46.2,78.4,30.5,0.0,49.6,100.0
+30,30,Driver 30,Unknown,46.0,45.0,61.2,0.0,42.5,100.0
+23,23,Alexander Albon,Williams,45.6,35.8,69.2,0.0,39.4,100.0
+3,3,Daniel Ricciardo,RB,45.4,36.3,63.1,0.0,49.4,100.0
+77,77,Valtteri Bottas,Sauber,44.7,24.9,71.4,0.0,47.3,100.0
+31,31,Esteban Ocon,Alpine,39.9,27.6,49.5,0.0,54.3,100.0
+38,38,Driver 38,Unknown,35.7,47.4,11.2,0.0,70.0,100.0
+22,22,Yuki Tsunoda,RB,34.5,40.4,27.0,0.0,41.9,100.0
+20,20,Kevin Magnussen,Haas,33.3,32.0,23.6,0.0,55.2,100.0
+11,11,Sergio Perez,Red Bull,31.3,56.1,0.0,0.0,48.3,100.0
+18,18,Lance Stroll,Aston Martin,26.1,36.0,0.0,0.0,47.5,100.0
+2,2,Logan Sargeant,Williams,22.5,13.5,5.7,0.0,49.2,100.0
+24,24,Zhou Guanyu,Sauber,22.0,9.8,0.0,0.0,63.3,100.0
+61,61,Driver 61,Unknown,21.2,0.0,0.0,0.0,75.0,100.0
+12,12,Driver 12,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+28,28,Driver 28,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+29,29,Driver 29,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+34,34,Driver 34,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+37,37,Driver 37,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+39,39,Driver 39,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+40,40,Driver 40,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+45,45,Driver 45,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+46,46,Driver 46,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
+97,97,Driver 97,Unknown,0.0,0.0,0.0,0.0,0.0,0.0
