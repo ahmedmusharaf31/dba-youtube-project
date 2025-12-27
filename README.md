@@ -21,16 +21,36 @@ The repository follows **clean Git practices**, avoids committing large/generate
 ## 📂 Folder Structure
 
 ```
-F1/
-├── Descriptive/           # Exploratory Data Analysis (EDA)
-├── Predictive/            # Predictive modeling & ML pipelines
-├── f1_cache/              # Cached intermediate files (ignored)
-├── f1_data_cache/         # Auto-generated datasets (ignored)
-├── dashboard/             # Dashboard application code
-├── .gitignore             # Git ignore rules
-├── README.md              # Project documentation
-├── requirements.txt       # Python dependencies
-└── *.py / *.ipynb         # Source code & notebooks
+.
+├── Descriptive/                 # Descriptive analytics (EDA + pipeline)
+│   ├── data/
+│   │   ├── processed/
+│   │   └── raw/
+│   ├── notebooks/
+│   │   ├── 01_extraction.ipynb
+│   │   ├── 02_cleaning.ipynb
+│   │   ├── 03_feature_eng.ipynb
+│   │   └── 04_eda_vis.ipynb
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── analytics.py
+│   │   ├── config.py
+│   │   ├── utils.py
+│   │   └── youtube_extractor.py
+│   └── run_analytics.py
+├── Predictive/                  # Predictive modeling + dashboard
+│   ├── f1_dashboard.py
+│   ├── main_script.py
+│   ├── driver_rankings_2024.csv
+│   ├── driver_performance_2024.csv
+│   ├── 2025_predictions.csv
+│   ├── 2025_champion_prediction.txt
+│   ├── f1_cache/                # Cached intermediate files (ignored)
+│   └── f1_data_cache/           # Auto-generated datasets (ignored)
+├── 2025_champion_prediction.txt
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
 ---
@@ -88,7 +108,7 @@ This allows both technical and non-technical users to explore the data effective
 
 ```bash
 git clone https://github.com/ahmedmusharaf31/dba-reddit-project.git
-cd F1
+cd dba-youtube-project
 ```
 
 ### 2️⃣ Create a virtual environment (recommended)
@@ -156,7 +176,7 @@ No committed binary or database files are required.
 
 ## 👨‍💻 Contributors
 
-* **Saaim**
+* **Saaim Ali Khan**
 * **Ahmed Musharaf**
 
 ---
