@@ -22,7 +22,7 @@ The repository follows **clean Git practices**, avoids committing large/generate
 
 ```
 .
-├── Descriptive/                 # Descriptive analytics (EDA + pipeline)
+├── Descriptive/                 # Descriptive analytics
 │   ├── data/
 │   │   ├── processed/
 │   │   └── raw/
@@ -38,15 +38,15 @@ The repository follows **clean Git practices**, avoids committing large/generate
 │   │   ├── utils.py
 │   │   └── youtube_extractor.py
 │   └── run_analytics.py
-├── Predictive/                  # Predictive modeling + dashboard
-│   ├── f1_dashboard.py
+├── Predictive/                  # Predictive modeling
+│   ├── f1_dashboard.py          
 │   ├── main_script.py
 │   ├── driver_rankings_2024.csv
 │   ├── driver_performance_2024.csv
 │   ├── 2025_predictions.csv
 │   ├── 2025_champion_prediction.txt
-│   ├── f1_cache/                # Cached intermediate files (ignored)
-│   └── f1_data_cache/           # Auto-generated datasets (ignored)
+│   ├── f1_cache/                # Cached intermediate files
+│   └── f1_data_cache/           # Auto-generated datasets
 ├── 2025_champion_prediction.txt
 ├── .gitignore
 ├── README.md
@@ -91,6 +91,8 @@ The **Predictive** module applies machine learning techniques to:
 ---
 
 ## 📈 Dashboard
+
+The dashboard serves as a **unified interface** for both the **Descriptive** and **Predictive** parts of the project.
 
 The dashboard serves as a **unified interface** that:
 
